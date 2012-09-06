@@ -25,7 +25,6 @@ public class DSConnection  {
     }
    
     
-    
 	static {
 		ObjectifyService.factory(); //setFactory(new ObjectifyFactory());
 	
@@ -66,7 +65,8 @@ public class DSConnection  {
      * @param key
      * @return
      */
-	public Object getEntity (Key<?> entityKey){
+    @SuppressWarnings("unchecked")
+	public Object getEntity (Key entityKey){
     	return ofy().load().key(entityKey).get();
     }
     
@@ -75,9 +75,11 @@ public class DSConnection  {
      * @param key
      * @return
      */
-	public Map<?, ?> getEntitities (Key<?>... entities){
-    	return ofy().load().keys(entities);
+    @SuppressWarnings("unchecked")
+	public Map getEntities (Iterable entities){
+		return ofy().load().keys(entities);
     }
+    
     
     /**
      * 
@@ -85,9 +87,10 @@ public class DSConnection  {
      * @return
      */
     @SuppressWarnings("unchecked")
-	public Map getEntitities (Iterable collection){
-    	return ofy().load().keys(collection);
+	public Map getEntities (Key... entities){
+    	return ofy().load().keys(entities);
     }
+    
     
     /**
      * Persiste una entidad en el DataStore.
@@ -101,18 +104,18 @@ public class DSConnection  {
      	return ofy().save().entity(entity).now();
     }
      
- 	
- 	/**
- 	 * Pertiste varias entidades en el DataStore
- 	 * 
- 	 * Es un wrapper que desacopla la v3 de Objectify para v4.
- 	 * 
- 	 * @param entitys
- 	 * @return
- 	 */
-    @SuppressWarnings("unchecked")
- 	public Result<Map<Key<Object>, Object>> putEntities (Iterable entitys){
-     	return ofy().save().entities(entitys);
+    
+    /**
+     * Persiste una entidad en el DataStore.
+     * 
+     * Es un wrapper que desacopla la v3 de Objectify para v4.
+     * 
+     * @param entity
+     * @return
+     */
+ 	public Object putEntity (Iterable entities){
+ 		
+ 		return ofy().save().entities(entities).now();
     }
  	
  	/**
@@ -139,7 +142,16 @@ public class DSConnection  {
     public Result<Void> deleteEntity (Key entityKey){
     	return ofy().delete().key(entityKey);
     }
-    
+    /**
+     * Elimina un "grupo" de entidades a través de su Key.
+     * 
+     * Es un wrapper que desacopla la v3 de Objectify para v4.
+     * @param entitys
+     * @return
+     */
+    public Result<Void> deleteEntity (Iterable entities) {
+    	return ofy().delete().entities(entities);
+    }
     /**
      * Elimina una entidad a través de su Key.
      * 
@@ -159,9 +171,11 @@ public class DSConnection  {
      * @param entitys
      * @return
      */
-    public Result<Void> deleteEntities (Object... entitys) {
-    	return ofy().delete().entities(entitys);
+    public Result<Void> deleteEntities (Object... entities) {
+    	return ofy().delete().entities(entities);
     }
+    
+    
     
     public DSConnection() {
     	super();

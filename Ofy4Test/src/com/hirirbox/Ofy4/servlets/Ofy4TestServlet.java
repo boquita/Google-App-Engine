@@ -127,7 +127,7 @@ public class Ofy4TestServlet extends HttpServlet {
 		
 		System.out.println ("getMessagesByReference :: usuario :: " + userKey.getId());
 		Query<MessageIndex> query = DSConnection.getInstance().ofy().load().group(User.class).type(MessageIndex.class).filter("receiverKeyList", userKey);
-		return DSConnection.getInstance().getEntitities(query.keys().list());
+		return DSConnection.getInstance().getEntities(query.keys().list());
 	}
 	
 	
